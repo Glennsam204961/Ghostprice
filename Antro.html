@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Age Verification</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body, html {
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .age-verification {
+      text-align: center;
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+    .age-verification h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .age-verification p {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      color: #bbb;
+    }
+    .button-container {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .btn-continue {
+      background-color: #00ff00;
+      color: #000;
+    }
+    .btn-continue:hover {
+      background-color: #00cc00;
+    }
+    .btn-exit {
+      background-color: #d32f2f;
+      color: #fff;
+    }
+    .btn-exit:hover {
+      background-color: #b71c1c;
+    }
+  </style>
+</head>
+<body>
+  <div class="age-verification">
+    <h1>Age Verification</h1>
+    <p>You must be 18 or older to access this website. Please confirm your age.</p>
+    <div class="button-container">
+      <button class="btn btn-continue" onclick="continueToSite()">Continue</button>
+      <button class="btn btn-exit" onclick="blockSite()">Exit</button>
+    </div>
+  </div>
+
+  <script>
+    // Redirects to the main site if the user confirms they are 18+
+    function continueToSite() {
+      // Replace with your main site URL
+      window.location.href = "/indix.html";
+    }
+
+    // Redirects to a blocked page if the user chooses to exit
+    function blockSite() {
+      // Replace with your blocked page URL
+      window.location.href = "/back.html";
+    }
+  </script>
+</body>
+</html>

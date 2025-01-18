@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+.top {
+  position: relative;
+  background-color: #111;
+  padding-bottom: 0;
+}
+
+.cover-photo {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+}
+
+.profile-section {
+  position: absolute;
+  bottom: -40px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.profile-pic-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  object-fit: cover;
+}
+
+.username {
+  margin-left: 15px;
+  font-weight: bold;
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.username small {
+  display: block;
+  font-size: 1rem;
+  color: #888;
+}
+
+.messagesdiv {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  scroll-behavior: smooth;
+}
+
+.message-container {
+  display: flex;
+  align-items: flex-end;
+  margin: 0.5rem 0;
+}
+
+.profile-pic {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #444;
+}
+
+.message-text {
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  max-width: 70%;
+  font-family: 'Roboto Mono', monospace;
+  word-wrap: break-word;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.receiver-container {
+  background-color: #222;
+  color: #00ff00;
+  border: 1px solid #00ff00;
+}
+
+.receiver-container2 {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #333;
+}
+
+.message-container.user {
+  justify-content: flex-end;
+}
+
+.message-container.user .profile-pic {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+.message-container.user .message-text {
+  background-color: #555;
+  color: #fff;
+  border: 1px solid #555;
+}
+
+.typing-indicator {
+  display: none;
+  background-color: #333;
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px;
+  font-size: 0.8rem;
+  max-width: 45px;
+}
+
+.typing-indicator span {#42445A
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 3px;
+  background-color: #fff;
+  border-radius: 50%;
+  animation: typing 1s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-5px);
+    opacity: 0.5;
+  }
+}
+
+.bottom {
+  display: flex;
+  padding: 10px;
+  background-color: #111;
+  border-top: 2px solid #444;
+}
+
+.inputtext {
+  flex-grow: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 30px;
+  outline: none;
+  background-color: #222;
+  color: #fff;
+  margin-right: 10px;
+  font-size: 0.9rem;
+}
+
+.send {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 20px;
+  background-color: white;
+  color: #000;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.starttext {
+  color: #888;
+  padding: 10px 10%;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.popup-container {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.5s ease;
+  opacity: 0;
+}
+
+.popup-box {
+  background-color: white;
+  padding: 20px;
+  width: 80%;
+  max-width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.popup-box h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.popup-box p {
+  font-size: 16px;
+  color: #666;
+}
+
+.close-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.close-btn:hover {
+  background-color: #d32f2f;
+}
+
+@keyframes popupAnimation {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Hamburger Button Styles */
+.hamburger {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.hamburger div {
+  width: 30px;
+  height: 3px;
+  background-color: #fff;
+  margin: 6px 0;
+  transition: 0.4s;
+}
+
+.hamburger-menu {
+  display: none;
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background-color: #222;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.hamburger-menu a {
+  display: block;
+  padding: 15px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.hamburger-menu a:hover {
+  background-color: #444;
+}
+
+.hamburger.active div:nth-child(1) {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger.active div:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active div:nth-child(3) {
+  transform: rotate(45deg) translate(-5px, -6px);
+}
+.video-container {
+  margin: 0.5rem 0;
+  max-width: 70%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <img src="/img/Picsart_24-08-25_10-07-45-476.jpg" alt="Cover Photo" class="cover-photo">
+  <div class="profile-section">
+    <img src="/img/Picsart_24-08-26_07-33-34-614.jpg" alt="Profile Picture" class="profile-pic-large">
+    <p class="username">Glenn Sam Evangelio<br><small><span id="spanonline">Online</span></small></p>
+  </div>
+  
+  <!-- Hamburger Button -->
+  <div class="hamburger" onclick="toggleMenu()">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  
+  <!-- Hamburger Menu -->
+  <div class="hamburger-menu" id="hamburgerMenu">
+        <a href="https://www.facebook.com/profile.php?id=100084911114022">Follow Me</a>
+    <a href="/indix.html">Log Out</a>
+  </div>
+</div>
+
+<div id="messagesdivid" class="messagesdiv">
+  <p class="starttext">Web//:dev2.0</p>
+</div>
+
+<div class="typing-indicator" id="typingIndicator">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<div class="popup-container" id="popup">
+  <div class="popup-box">
+    <h2>Warning!</h2>
+    <p>By entering this site, you confirm that you are over 18 years old. If you are under 18, please exit immediately.
+</p>
+    <button class="close-btn" onclick="closePopup()">Close</button>
+  </div>
+</div>
+
+<script>
+  var answerlist = [
+    "Hello",
+    "Good morning 🌄",
+    "What's on your mind?",
+    "Follow us for more updates!",
+    "Have a great day 🍀"
+  ];
+
+  var imageList = [
+    "/img/Picsart_24-08-26_07-33-34-614.jpg", // Replace with your image file paths
+    "/img/image2.jpg",
+    "/img/image3.jpg",
+    "/img/image4.jpg",
+    "/img/image5.jpg"
+  ];
+
+  var responseIndex = 0;
+  var imageIndex = 0;
+
+  function send_text() {
+    var x = document.getElementById("message_box").value;
+    if (x !== "") {
+      var messageContainer = document.createElement('div');
+      messageContainer.className = 'message-container user';
+
+      var elem = document.createElement('div');
+      elem.className = 'message-text receiver-container';
+      elem.innerText = x;
+
+      messageContainer.appendChild(elem);
+      document.getElementById("messagesdivid").appendChild(messageContainer);
+
+      document.getElementById('message_box').value = "";
+      document.getElementById("messagesdivid").scrollTo(0, document.getElementById("messagesdivid").scrollHeight);
+
+      document.getElementById("spanonline").innerHTML = "Typing...";
+      document.getElementById("typingIndicator").style.display = 'flex';
+
+      if (x === "Send master") {
+        setTimeout(sendImageResponse, 2000); // Trigger image response
+      } else {
+        setTimeout(answer, 2000); // Trigger text response
+      }
+    }
+  }
+
+  function answer() {
+    var randomanswer = answerlist[responseIndex];
+    responseIndex = (responseIndex + 1) % answerlist.length;
+
+    var messageContainer = document.createElement('div');
+    messageContainer.className = 'message-container';
+
+    var elem = document.createElement('div');
+    elem.className = 'message-text receiver-container2';
+    elem.innerText = randomanswer;
+
+    messageContainer.appendChild(elem);
+    document.getElementById("messagesdivid").appendChild(messageContainer);
+
+    document.getElementById("messagesdivid").scrollTo(0, document.getElementById("messagesdivid").scrollHeight);
+    document.getElementById("typingIndicator").style.display = 'none';
+    document.getElementById("spanonline").innerHTML = "Online";
+  }
+
+  function sendImageResponse() {
+    if (imageIndex >= imageList.length) imageIndex = 0; // Reset to the first image
+
+    var messageContainer = document.createElement('div');
+    messageContainer.className = 'message-container';
+
+    var imgElem = document.createElement('img');
+    imgElem.setAttribute('src', imageList[imageIndex]);
+    imgElem.setAttribute('alt', 'Image Response');
+    imgElem.style.width = '100%';
+    imgElem.style.borderRadius = '12px';
+    imgElem.style.marginTop = '10px';
+
+    messageContainer.appendChild(imgElem);
+    document.getElementById("messagesdivid").appendChild(messageContainer);
+
+    document.getElementById("messagesdivid").scrollTo(0, document.getElementById("messagesdivid").scrollHeight);
+    document.getElementById("typingIndicator").style.display = 'none';
+    document.getElementById("spanonline").innerHTML = "Online";
+
+    imageIndex++; // Move to the next image in the list
+  }
+
+  function toggleMenu() {
+    var menu = document.getElementById('hamburgerMenu'); // Select the menu element
+    var hamburger = document.querySelector('.hamburger'); // Select the hamburger button
+
+    // Toggle the display style of the menu
+    if (menu.style.display === 'block') {
+      menu.style.display = 'none'; // Hide the menu
+    } else {
+      menu.style.display = 'block'; // Show the menu
+    }
+
+    // Toggle the 'active' class on the hamburger button
+    hamburger.classList.toggle('active');
+  }
+</script>
+<div class="bottom">
+  <input type="text" class="inputtext" placeholder="Type your message..." id="message_box">
+  <button class="send" onclick="send_text()">Send</button>
+</div>
+
+</body>
+</html>
